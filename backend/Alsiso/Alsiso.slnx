@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../src/Alsiso.Api/Alsiso.Api.csproj" />
+  <Project Path="../src/Alsiso.Application/Alsiso.Application.csproj" />
+  <Project Path="../src/Alsiso.Domain/Alsiso.Domain.csproj" />
+  <Project Path="../src/Alsiso.Infrastructure/Alsiso.Infrastructure.csproj" />
+</Solution>
