@@ -1,0 +1,6 @@
+@Alsiso.Api_HostAddress = http://localhost:5063
+
+GET {{Alsiso.Api_HostAddress}}/api/products
+Accept: application/json
+
+###

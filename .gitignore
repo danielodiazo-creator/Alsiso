@@ -8,3 +8,7 @@ coverage/
 Thumbs.db
 .vscode/
 .vs/
+**/bin/
+**/obj/
+*.csproj.user
+*.suo
