@@ -12,10 +12,18 @@ namespace Alsiso.Api.Controllers
     {
         private readonly ListProductsUseCase _listProductsUseCase;
 
-        public ProductsController(ListProductsUseCase listProductsUseCase)
+        private readonly CreateProductUseCase _createProductUseCase;
+
+
+        public ProductsController(
+        ListProductsUseCase listProductsUseCase,
+        CreateProductUseCase createProductUseCase)
         {
             _listProductsUseCase = listProductsUseCase;
+            _createProductUseCase = createProductUseCase;
         }
+
+
 
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProductResponse>>> GetAll(
@@ -34,6 +42,33 @@ namespace Alsiso.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductResponse>> Create(
+        CreateProductRequest request,
+        CancellationToken cancellationToken)
+        {
+            var command = new CreateProductCommand(
+                request.Name,
+                request.Description,
+                request.Category,
+                request.Price);
+
+            var product = await _createProductUseCase.ExecuteAsync(
+                command,
+                cancellationToken);
+
+            var response = new ProductResponse(
+                product.Id,
+                product.Name,
+                product.Description,
+                product.Category,
+                product.Price);
+
+            return StatusCode(StatusCodes.Status201Created, response);
+        }
+
+
 
     }
 }

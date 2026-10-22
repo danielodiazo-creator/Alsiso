@@ -6,11 +6,11 @@ namespace Alsiso.Domain.Entities
 {
     public sealed class Product
     {
-        public Guid Id { get; }
-        public string Name { get; }
-        public string Description { get; }
-        public string Category { get; }
-        public decimal? Price { get; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public string Category { get; private set; }
+        public decimal? Price { get; private set; }
 
         public Product(
             Guid id,
