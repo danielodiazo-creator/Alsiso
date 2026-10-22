@@ -10,5 +10,6 @@ namespace Alsiso.Application.Products
         Task<IReadOnlyList<Product>> GetAllAsync
             (CancellationToken cancellationToken  = default);
 
+        Task AddAsync(Product product, CancellationToken cancellationToken);
     }
 }
