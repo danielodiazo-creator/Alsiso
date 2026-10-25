@@ -16,15 +16,18 @@ namespace Alsiso.Api.Controllers
 
         private readonly GetProductByIdUseCase _getProductByIdUseCase;
 
+        private readonly UpdateProductUseCase _updateProductUseCase;
 
         public ProductsController(
         ListProductsUseCase listProductsUseCase,
         CreateProductUseCase createProductUseCase,
-        GetProductByIdUseCase getProductByIdUseCase)
+        GetProductByIdUseCase getProductByIdUseCase,
+        UpdateProductUseCase updateProductUseCase)
         {
             _listProductsUseCase = listProductsUseCase;
             _createProductUseCase = createProductUseCase;
             _getProductByIdUseCase = getProductByIdUseCase;
+            _updateProductUseCase = updateProductUseCase;
         }
 
 
@@ -95,6 +98,39 @@ namespace Alsiso.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult<ProductResponse>> Update(
+        Guid id,
+        UpdateProductRequest request,
+        CancellationToken cancellationToken)
+        {
+            var command = new UpdateProductCommand(
+                id,
+                request.Name,
+                request.Description,
+                request.Category,
+                request.Price);
+
+            var product = await _updateProductUseCase.ExecuteAsync(
+                command,
+                cancellationToken);
+
+            if (product is null)
+            {
+                return NotFound();
+            }
+
+            var response = new ProductResponse(
+                product.Id,
+                product.Name,
+                product.Description,
+                product.Category,
+                product.Price);
+
+            return Ok(response);
+        }
+
 
     }
 }

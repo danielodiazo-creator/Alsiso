@@ -36,5 +36,14 @@ namespace Alsiso.Infrastructure.Products
                 cancellationToken);
         }
 
+        public async Task UpdateAsync(
+        Product product,
+        CancellationToken cancellationToken)
+        {
+            dbContext.Products.Update(product);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+
     }
 }
