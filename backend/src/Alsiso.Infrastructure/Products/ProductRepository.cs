@@ -44,6 +44,23 @@ namespace Alsiso.Infrastructure.Products
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task<bool> DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+        {
+            var product = await dbContext.Products
+                .FirstOrDefaultAsync(product => product.Id == id, cancellationToken);
+
+            if (product is null)
+            {
+                return false;
+            }
+
+            dbContext.Products.Remove(product);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return true;
+        }
 
     }
 }
