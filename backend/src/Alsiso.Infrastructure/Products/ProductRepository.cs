@@ -26,5 +26,15 @@ namespace Alsiso.Infrastructure.Products
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
+
+        public async Task<Product?> GetByIdAsync
+            (Guid id, CancellationToken cancellationToken)
+        {
+            return await dbContext.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(product => product.Id == id,
+                cancellationToken);
+        }
+
     }
 }
