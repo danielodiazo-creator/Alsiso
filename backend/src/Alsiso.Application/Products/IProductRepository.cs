@@ -18,5 +18,8 @@ namespace Alsiso.Application.Products
 
         Task UpdateAsync(Product product, CancellationToken cancellationToken);
 
+        Task<bool> DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken);
     }
 }

@@ -20,7 +20,7 @@ namespace Alsiso.Api
             builder.Services.AddScoped<CreateProductUseCase>();
             builder.Services.AddScoped<GetProductByIdUseCase>();
             builder.Services.AddScoped<UpdateProductUseCase>();
-
+            builder.Services.AddScoped<DeleteProductUseCase>();
 
 
 

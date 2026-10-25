@@ -18,16 +18,20 @@ namespace Alsiso.Api.Controllers
 
         private readonly UpdateProductUseCase _updateProductUseCase;
 
+        private readonly DeleteProductUseCase _deleteProductUseCase;
+
         public ProductsController(
         ListProductsUseCase listProductsUseCase,
         CreateProductUseCase createProductUseCase,
         GetProductByIdUseCase getProductByIdUseCase,
-        UpdateProductUseCase updateProductUseCase)
+        UpdateProductUseCase updateProductUseCase,
+        DeleteProductUseCase deleteProductUseCase )
         {
             _listProductsUseCase = listProductsUseCase;
             _createProductUseCase = createProductUseCase;
             _getProductByIdUseCase = getProductByIdUseCase;
             _updateProductUseCase = updateProductUseCase;
+            _deleteProductUseCase = deleteProductUseCase;
         }
 
 
@@ -131,6 +135,22 @@ namespace Alsiso.Api.Controllers
             return Ok(response);
         }
 
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken)
+        {
+            var deleted = await _deleteProductUseCase.ExecuteAsync(
+                id,
+                cancellationToken);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
 
     }
 }
