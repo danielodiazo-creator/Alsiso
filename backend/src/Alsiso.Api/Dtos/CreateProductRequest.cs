@@ -1,8 +1,12 @@
-﻿namespace Alsiso.Api.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Alsiso.Api.Dtos
 {
+
     public sealed record CreateProductRequest(
-    string Name,
+    [Required] string Name,
     string Description,
-    string Category,
+    [Required] string Category,
+    [Range(typeof(decimal), "0", "79228162514264337593543950335")]
     decimal? Price);
 }

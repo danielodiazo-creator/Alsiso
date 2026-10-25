@@ -12,3 +12,7 @@ Thumbs.db
 **/obj/
 *.csproj.user
 *.suo
+# Base de datos local de SQLite
+**/alsiso.db
+**/alsiso.db-shm
+**/alsiso.db-wal
