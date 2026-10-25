@@ -16,7 +16,7 @@ namespace Alsiso.Application.Products
         Guid id,
         CancellationToken cancellationToken);
 
-
+        Task UpdateAsync(Product product, CancellationToken cancellationToken);
 
     }
 }
