@@ -11,5 +11,12 @@ namespace Alsiso.Application.Products
             (CancellationToken cancellationToken  = default);
 
         Task AddAsync(Product product, CancellationToken cancellationToken);
+
+        Task<Product?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
+
+
+
     }
 }
