@@ -3,6 +3,8 @@ using Alsiso.Application.Products;
 using Alsiso.Infrastructure.Products;
 using Alsiso.Infrastructure.Products.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Alsiso.Application.Quotes;
+using Alsiso.Infrastructure.Quotes;
 
 namespace Alsiso.Api
 {
@@ -21,6 +23,12 @@ namespace Alsiso.Api
             builder.Services.AddScoped<GetProductByIdUseCase>();
             builder.Services.AddScoped<UpdateProductUseCase>();
             builder.Services.AddScoped<DeleteProductUseCase>();
+            builder.Services.AddScoped<
+            IQuoteRequestRepository,
+            QuoteRequestRepository>();
+
+            builder.Services.AddScoped<CreateQuoteRequestUseCase>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("FrontendDev", policy =>

@@ -13,5 +13,7 @@ namespace Alsiso.Infrastructure.Products.Persistence
         { }
 
         public DbSet<Product> Products => Set<Product>();
+
+        public DbSet<QuoteRequest> QuoteRequests => Set<QuoteRequest>();
     }
 }
