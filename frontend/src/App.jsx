@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getProductById, getProducts } from './Services/ProductService.js'
+import { QuoteRequestForm } from './components/QuoteRequestForm.jsx'
 import './App.css'
+
 
 function App() {
   const [products, setProducts] = useState([])
@@ -9,6 +11,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
   const [detailError, setDetailError] = useState('')
+const [quoteFormOpen, setQuoteFormOpen] = useState(false)
 
   useEffect(() => {
     async function loadProducts() {
@@ -27,6 +30,7 @@ function App() {
 
   async function openProduct(product) {
     setSelectedProduct(product)
+    setQuoteFormOpen(false)
     setDetailError('')
     setDetailLoading(true)
 
@@ -43,6 +47,7 @@ function App() {
   function showCatalog() {
     setSelectedProduct(null)
     setDetailError('')
+    setQuoteFormOpen(false)
   }
 
   return (
@@ -108,6 +113,20 @@ function App() {
           )}
 
           <article className="product-detail-card">
+            {quoteFormOpen ? (
+  <QuoteRequestForm
+    product={selectedProduct}
+    onClose={() => setQuoteFormOpen(false)}
+  />
+) : (
+  <button
+    type="button"
+    className="primary-button quote-open-button"
+    onClick={() => setQuoteFormOpen(true)}
+  >
+    Solicitar cotización
+  </button>
+)}
             <div className="detail-art" aria-hidden="true">
               <div className="mini-sign">50</div>
             </div>
