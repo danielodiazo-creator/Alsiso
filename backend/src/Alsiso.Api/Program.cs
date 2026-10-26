@@ -21,7 +21,16 @@ namespace Alsiso.Api
             builder.Services.AddScoped<GetProductByIdUseCase>();
             builder.Services.AddScoped<UpdateProductUseCase>();
             builder.Services.AddScoped<DeleteProductUseCase>();
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("FrontendDev", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
 
             builder.Services.AddControllers();
@@ -33,6 +42,8 @@ namespace Alsiso.Api
             builder.Configuration.GetConnectionString("Alsiso");
             builder.Services.AddDbContext<AlsisoDbContext>(options =>
             options.UseSqlite(connectionString));
+
+           
 
 
             var app = builder.Build();
@@ -53,6 +64,8 @@ namespace Alsiso.Api
 
             app.UseHttpsRedirection();
 
+            app.UseRouting();
+            app.UseCors("FrontendDev");
             app.UseAuthorization();
 
 
