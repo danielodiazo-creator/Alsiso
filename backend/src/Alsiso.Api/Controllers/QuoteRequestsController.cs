@@ -1,5 +1,6 @@
 ﻿using Alsiso.Api.Dtos;
 using Alsiso.Application.Quotes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Alsiso.Api.Controllers;
@@ -7,7 +8,7 @@ namespace Alsiso.Api.Controllers;
 [ApiController]
 [Route("api/quote-requests")]
 public sealed class QuoteRequestsController(
-    CreateQuoteRequestUseCase createQuoteRequestUseCase) : ControllerBase
+    CreateQuoteRequestUseCase createQuoteRequestUseCase, GetQuoteRequestsUseCase getQuoteRequestsUseCase) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<QuoteRequestResponse>> Create(
@@ -54,5 +55,29 @@ public sealed class QuoteRequestsController(
             quoteRequest.CreatedAt);
 
         return StatusCode(StatusCodes.Status201Created, response);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<QuoteRequestResponse>>> GetAll(
+        CancellationToken cancellationToken)
+    {
+        var quoteRequests = await getQuoteRequestsUseCase.ExecuteAsync(
+            cancellationToken);
+
+        var responses = quoteRequests
+            .Select(quoteRequest => new QuoteRequestResponse(
+                quoteRequest.Id,
+                quoteRequest.ProductId,
+                quoteRequest.ProductName,
+                quoteRequest.CustomerName,
+                quoteRequest.Email,
+                quoteRequest.Phone,
+                quoteRequest.Quantity,
+                quoteRequest.Message,
+                quoteRequest.CreatedAt))
+            .ToList();
+
+        return Ok(responses);
     }
 }

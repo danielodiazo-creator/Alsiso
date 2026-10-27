@@ -4,6 +4,7 @@ using Alsiso.Infrastructure.Products.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Alsiso.Infrastructure.Quotes
 {
@@ -20,5 +21,25 @@ namespace Alsiso.Infrastructure.Quotes
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<IReadOnlyList<QuoteRequest>> GetAllAsync(
+        CancellationToken cancellationToken)
+        {
+            var quoteRequests = await dbContext.QuoteRequests
+           .AsNoTracking()
+           .ToListAsync(cancellationToken);
+
+            return quoteRequests
+                .OrderByDescending(quoteRequest => quoteRequest.CreatedAt)
+                .ToList();
+        }
+
+
+
+
+
+
     }
+
+
 }

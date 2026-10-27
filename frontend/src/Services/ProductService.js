@@ -34,12 +34,5 @@ export function deleteProduct(id) {
   })
 }
 
-export function createQuoteRequest(quoteRequest) {
-  return requestJson('/api/quote-requests', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(quoteRequest),
-  })
-}
+
+  

@@ -10,6 +10,7 @@ import { AdminProductManager } from './Components/AdminProductManager.jsx'
 import { QuoteRequestForm } from './Components/QuoteRequestForm.jsx'
 import { WhatsAppButton } from './Components/WhatsAppButton.jsx'
 import './App.css'
+import { AdminQuoteRequests } from './Components/AdminQuoteRequests.jsx'
 
 function App() {
   const [products, setProducts] = useState([])
@@ -246,6 +247,8 @@ function App() {
           onProductsChanged={loadProducts}
         />
       )}
+
+      {currentAdmin && <AdminQuoteRequests />}
 
       {selectedProduct ? (
         <section className="catalog" id="productos">
