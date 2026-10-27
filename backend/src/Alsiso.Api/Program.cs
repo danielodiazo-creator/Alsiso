@@ -30,6 +30,7 @@ namespace Alsiso.Api
             QuoteRequestRepository>();
 
             builder.Services.AddScoped<CreateQuoteRequestUseCase>();
+            builder.Services.AddScoped<GetQuoteRequestsUseCase>();
 
             builder.Services.AddCors(options =>
             {

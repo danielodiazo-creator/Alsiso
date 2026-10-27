@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createQuoteRequest } from '../Services/ProductService.js'
+import { createQuoteRequest } from '../Services/quoteRequestService.js'
 
 const initialValues = {
   customerName: '',

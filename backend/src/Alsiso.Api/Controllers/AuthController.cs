@@ -63,4 +63,32 @@ public sealed class AuthController(
         await signInManager.SignOutAsync();
         return NoContent();
     }
+
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("revoke-sessions")]
+    public async Task<IActionResult> RevokeSessions()
+    {
+        var user = await userManager.GetUserAsync(User);
+
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await userManager.UpdateSecurityStampAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(new
+            {
+                message = "No se pudieron invalidar las sesiones."
+            });
+        }
+
+        await signInManager.SignOutAsync();
+
+        return NoContent();
+    }
+
 }

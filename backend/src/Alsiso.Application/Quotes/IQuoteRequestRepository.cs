@@ -10,5 +10,8 @@ namespace Alsiso.Application.Quotes
         Task AddAsync(
             QuoteRequest quoteRequest,
             CancellationToken cancellationToken);
+
+        Task<IReadOnlyList<QuoteRequest>> GetAllAsync(
+        CancellationToken cancellationToken);
     }
 }
