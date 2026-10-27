@@ -211,4 +211,36 @@ code {
   .quote-panel {
     padding: 20px;
   }
+
+  .detail-actions {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  color: #fff;
+  background: #168a48;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.whatsapp-button:hover {
+  background: #116d39;
+}
+
+@media (max-width: 600px) {
+  .detail-actions > * {
+    width: 100%;
+    text-align: center;
+  }
+}
 }
