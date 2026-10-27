@@ -2,7 +2,9 @@ import { useState } from 'react'
 import {
   createProduct,
   deleteProduct,
+  deleteProductImage,
   updateProduct,
+  uploadProductImage,
 } from '../Services/ProductService.js'
 
 const emptyProduct = {
@@ -17,6 +19,8 @@ export function AdminProductManager({ products, onProductsChanged }) {
   const [editingProductId, setEditingProductId] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [deletingProductId, setDeletingProductId] = useState(null)
+  const [uploadingImageProductId, setUploadingImageProductId] = useState(null)
+  const [removingImageProductId, setRemovingImageProductId] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
 
@@ -108,6 +112,46 @@ export function AdminProductManager({ products, onProductsChanged }) {
       setError(err.message)
     } finally {
       setDeletingProductId(null)
+    }
+  }
+
+  async function handleImageUpload(product, imageFile) {
+    if (!imageFile) return
+
+    setError('')
+    setNotice('')
+    setUploadingImageProductId(product.id)
+
+    try {
+      await uploadProductImage(product.id, imageFile)
+      await onProductsChanged()
+      setNotice(`Imagen de "${product.name}" actualizada.`)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setUploadingImageProductId(null)
+    }
+  }
+
+  async function handleImageDelete(product) {
+    const confirmed = window.confirm(
+      `¿Seguro que quieres quitar la imagen de "${product.name}"?`,
+    )
+
+    if (!confirmed) return
+
+    setError('')
+    setNotice('')
+    setRemovingImageProductId(product.id)
+
+    try {
+      await deleteProductImage(product.id)
+      await onProductsChanged()
+      setNotice(`Imagen de "${product.name}" eliminada.`)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setRemovingImageProductId(null)
     }
   }
 
@@ -219,12 +263,66 @@ export function AdminProductManager({ products, onProductsChanged }) {
         <div className="product-grid">
           {products.map((product) => (
             <article className="product-card" key={product.id}>
+              <div className="product-illustration">
+                {product.imageUrl ? (
+                  <img
+                    src={product.imageUrl}
+                    alt={`Imagen de ${product.name}`}
+                    style={{
+                      width: '100%',
+                      height: '190px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                ) : (
+                  <div className="mini-sign">50</div>
+                )}
+              </div>
+
               <div className="product-info">
                 <p className="product-category">{product.category}</p>
                 <h3>{product.name}</h3>
                 <p className="product-description">
                   {product.description || 'Sin descripción.'}
                 </p>
+
+                <div className="admin-product-actions">
+                  <label>
+                    Imagen principal (PNG, máximo 5 MB)
+                    <input
+                      type="file"
+                      accept="image/png,.png"
+                      disabled={
+                        uploadingImageProductId !== null ||
+                        removingImageProductId !== null
+                      }
+                      onChange={(event) => {
+                        const imageFile = event.target.files?.[0]
+                        event.target.value = ''
+
+                        if (imageFile) {
+                          handleImageUpload(product, imageFile)
+                        }
+                      }}
+                    />
+                  </label>
+
+                  {product.imageUrl && (
+                    <button
+                      type="button"
+                      className="admin-delete-button"
+                      onClick={() => handleImageDelete(product)}
+                      disabled={
+                        removingImageProductId === product.id ||
+                        uploadingImageProductId !== null
+                      }
+                    >
+                      {removingImageProductId === product.id
+                        ? 'Quitando imagen...'
+                        : 'Quitar imagen'}
+                    </button>
+                  )}
+                </div>
 
                 <div className="product-footer">
                   <strong>
@@ -238,7 +336,11 @@ export function AdminProductManager({ products, onProductsChanged }) {
                       type="button"
                       className="detail-button"
                       onClick={() => startEditing(product)}
-                      disabled={deletingProductId !== null}
+                      disabled={
+                        deletingProductId !== null ||
+                        uploadingImageProductId !== null ||
+                        removingImageProductId !== null
+                      }
                     >
                       Editar
                     </button>
@@ -247,7 +349,11 @@ export function AdminProductManager({ products, onProductsChanged }) {
                       type="button"
                       className="admin-delete-button"
                       onClick={() => handleDelete(product)}
-                      disabled={deletingProductId === product.id}
+                      disabled={
+                        deletingProductId === product.id ||
+                        uploadingImageProductId === product.id ||
+                        removingImageProductId === product.id
+                      }
                     >
                       {deletingProductId === product.id
                         ? 'Eliminando...'

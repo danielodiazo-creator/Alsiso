@@ -5,7 +5,8 @@
         string Name,
         string Description,
         string Category,
-        decimal? Price);
+        decimal? Price,
+        string? ImageUrl);
     
         
 
