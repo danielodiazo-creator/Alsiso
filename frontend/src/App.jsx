@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getProductById, getProducts } from './Services/ProductService.js'
 import {
   getCurrentAdmin,
@@ -6,6 +6,7 @@ import {
   logoutAdmin,
 } from './Services/authService.js'
 import { AdminLoginForm } from './Components/AdminLoginForm.jsx'
+import { AdminProductManager } from './Components/AdminProductManager.jsx'
 import { QuoteRequestForm } from './Components/QuoteRequestForm.jsx'
 import { WhatsAppButton } from './Components/WhatsAppButton.jsx'
 import './App.css'
@@ -28,20 +29,23 @@ function App() {
   const [loginOpen, setLoginOpen] = useState(false)
   const [authError, setAuthError] = useState('')
 
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const data = await getProducts()
-        setProducts(data)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
+  const loadProducts = useCallback(async () => {
+    setLoading(true)
+    setError('')
 
-    loadProducts()
+    try {
+      const data = await getProducts()
+      setProducts(data)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }, [])
+
+  useEffect(() => {
+    loadProducts()
+  }, [loadProducts])
 
   useEffect(() => {
     let isMounted = true
@@ -237,10 +241,10 @@ function App() {
       )}
 
       {currentAdmin && (
-        <p className="quote-success" role="status">
-          Sesión iniciada como {currentAdmin.email}. El panel de gestión de
-          productos será el siguiente paso.
-        </p>
+        <AdminProductManager
+          products={products}
+          onProductsChanged={loadProducts}
+        />
       )}
 
       {selectedProduct ? (

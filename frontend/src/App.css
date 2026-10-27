@@ -387,4 +387,44 @@ a {
   grid-column: 1 / -1;
 }
 
+.admin-product-form .admin-product-description,
+.admin-product-form .admin-form-hint,
+.admin-product-form .quote-error,
+.admin-product-form .quote-success,
+.admin-product-actions {
+  grid-column: 1 / -1;
+}
+
+.admin-form-hint {
+  margin: 0;
+  color: #687581;
+  font-size: 13px;
+}
+
+.admin-product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-product-list-heading {
+  margin: 38px 0 18px;
+}
+
+.admin-delete-button {
+  padding: 10px 12px;
+  color: #fff;
+  background: #a32121;
+  border: 1px solid #a32121;
+  border-radius: 5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-delete-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 }
