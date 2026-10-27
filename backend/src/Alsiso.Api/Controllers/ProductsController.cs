@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Alsiso.Application.Products;
 using Alsiso.Api.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Alsiso.Api.Controllers
 {
@@ -35,7 +36,7 @@ namespace Alsiso.Api.Controllers
         }
 
 
-
+        
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProductResponse>>> GetAll(
             CancellationToken cancellationToken)
@@ -54,6 +55,7 @@ namespace Alsiso.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ProductResponse>> Create(
         CreateProductRequest request,
@@ -103,6 +105,7 @@ namespace Alsiso.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<ProductResponse>> Update(
         Guid id,
@@ -135,6 +138,7 @@ namespace Alsiso.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(
         Guid id,
