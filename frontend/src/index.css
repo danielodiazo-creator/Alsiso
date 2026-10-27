@@ -243,4 +243,16 @@ code {
     text-align: center;
   }
 }
+
+.quote-field-error {
+  color: #a32121;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.quote-form input[aria-invalid='true'],
+.quote-form textarea[aria-invalid='true'] {
+  border-color: #a32121;
+}
+
 }
