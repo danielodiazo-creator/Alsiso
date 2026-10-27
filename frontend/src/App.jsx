@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 import { getProductById, getProducts } from './Services/ProductService.js'
+import {
+  getCurrentAdmin,
+  loginAdmin,
+  logoutAdmin,
+} from './Services/authService.js'
+import { AdminLoginForm } from './Components/AdminLoginForm.jsx'
 import { QuoteRequestForm } from './Components/QuoteRequestForm.jsx'
 import { WhatsAppButton } from './Components/WhatsAppButton.jsx'
 import './App.css'
@@ -17,6 +23,11 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [sortOrder, setSortOrder] = useState('name-asc')
 
+  const [currentAdmin, setCurrentAdmin] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [loginOpen, setLoginOpen] = useState(false)
+  const [authError, setAuthError] = useState('')
+
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -30,6 +41,27 @@ function App() {
     }
 
     loadProducts()
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function checkAdminSession() {
+      try {
+        const admin = await getCurrentAdmin()
+        if (isMounted) setCurrentAdmin(admin)
+      } catch {
+        if (isMounted) setCurrentAdmin(null)
+      } finally {
+        if (isMounted) setAuthLoading(false)
+      }
+    }
+
+    checkAdminSession()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const categories = [
@@ -62,7 +94,6 @@ function App() {
       const priceA = a.price == null ? null : Number(a.price)
       const priceB = b.price == null ? null : Number(b.price)
 
-      // Los productos sin precio quedan al final en ambos órdenes.
       if (priceA === null && priceB === null) return 0
       if (priceA === null) return 1
       if (priceB === null) return -1
@@ -107,6 +138,24 @@ function App() {
     setSelectedCategory('')
   }
 
+  async function handleAdminLogin(email, password) {
+    const admin = await loginAdmin(email, password)
+    setCurrentAdmin(admin)
+    setLoginOpen(false)
+  }
+
+  async function handleAdminLogout() {
+    setAuthError('')
+
+    try {
+      await logoutAdmin()
+      setCurrentAdmin(null)
+      setLoginOpen(false)
+    } catch (err) {
+      setAuthError(err.message)
+    }
+  }
+
   return (
     <main>
       <nav className="navbar">
@@ -125,6 +174,29 @@ function App() {
         <a className="nav-link" href="#productos" onClick={showCatalog}>
           Productos
         </a>
+
+        {authLoading ? (
+          <span>Verificando sesión...</span>
+        ) : currentAdmin ? (
+          <button
+            type="button"
+            className="detail-button"
+            onClick={handleAdminLogout}
+          >
+            Cerrar sesión
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="detail-button"
+            onClick={() => {
+              setAuthError('')
+              setLoginOpen(true)
+            }}
+          >
+            Acceso administrador
+          </button>
+        )}
       </nav>
 
       <section className="hero">
@@ -150,6 +222,26 @@ function App() {
           </div>
         </div>
       </section>
+
+      {loginOpen && !currentAdmin && (
+        <AdminLoginForm
+          onLogin={handleAdminLogin}
+          onCancel={() => setLoginOpen(false)}
+        />
+      )}
+
+      {authError && (
+        <p className="quote-error" role="alert">
+          {authError}
+        </p>
+      )}
+
+      {currentAdmin && (
+        <p className="quote-success" role="status">
+          Sesión iniciada como {currentAdmin.email}. El panel de gestión de
+          productos será el siguiente paso.
+        </p>
+      )}
 
       {selectedProduct ? (
         <section className="catalog" id="productos">

@@ -1,14 +1,4 @@
-const API_URL = 'http://localhost:5063'
-
-async function requestJson(path, options = {}) {
-  const response = await fetch(`${API_URL}${path}`, options)
-
-  if (!response.ok) {
-    throw new Error(`Error de la API: ${response.status}`)
-  }
-
-  return response.json()
-}
+import { requestJson } from './apiClient.js'
 
 export function getProducts() {
   return requestJson('/api/products')

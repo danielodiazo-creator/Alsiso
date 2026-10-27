@@ -377,5 +377,14 @@ a {
   }
 }
 
+.admin-login-form {
+  grid-template-columns: 1fr;
+}
+
+.admin-login-form > label,
+.admin-login-form > .quote-error,
+.admin-login-form > .quote-submit {
+  grid-column: 1 / -1;
+}
 
 }
