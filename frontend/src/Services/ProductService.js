@@ -34,5 +34,25 @@ export function deleteProduct(id) {
   })
 }
 
+export function uploadProductImage(id, imageFile) {
+  const formData = new FormData()
+  formData.append('image', imageFile)
 
+  return requestJson(
+    `/api/products/${encodeURIComponent(id)}/image`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
+}
+
+export function deleteProductImage(id) {
+  return requestJson(
+    `/api/products/${encodeURIComponent(id)}/image`,
+    {
+      method: 'DELETE',
+    },
+  )
+}
   

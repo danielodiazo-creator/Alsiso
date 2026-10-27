@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Alsiso.Application.Quotes;
 using Alsiso.Infrastructure.Quotes;
 using Microsoft.AspNetCore.Identity;
+using Alsiso.Infrastructure.Products.Images;
 
 namespace Alsiso.Api
 {
@@ -31,6 +32,19 @@ namespace Alsiso.Api
 
             builder.Services.AddScoped<CreateQuoteRequestUseCase>();
             builder.Services.AddScoped<GetQuoteRequestsUseCase>();
+
+            var productImagesDirectory = Path.Combine(
+            builder.Environment.ContentRootPath,
+            "wwwroot",
+            "uploads",
+            "products");
+
+            builder.Services.AddScoped<IProductImageStorage>(
+                _ => new LocalProductImageStorage(productImagesDirectory));
+
+            builder.Services.AddScoped<UploadProductImageUseCase>();
+            builder.Services.AddScoped<RemoveProductImageUseCase>();
+
 
             builder.Services.AddCors(options =>
             {
@@ -85,6 +99,7 @@ namespace Alsiso.Api
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors("FrontendDev");
             app.UseAuthentication();

@@ -179,6 +179,18 @@ a {
   background: #edf1f4;
 }
 
+.product-image {
+  width: 100%;
+  height: 190px;
+  object-fit: contain;
+}
+
+.detail-image {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+}
+
 .mini-sign {
   width: 112px;
   height: 112px;

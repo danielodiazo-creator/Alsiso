@@ -11,6 +11,7 @@ namespace Alsiso.Domain.Entities
         public string Description { get; private set; }
         public string Category { get; private set; }
         public decimal? Price { get; private set; }
+        public string? ImageUrl { get; private set; }
 
         public Product(
             Guid id,
@@ -42,6 +43,18 @@ namespace Alsiso.Domain.Entities
             Description = description;
             Category = category;
             Price = price;
+        }
+
+        public void SetImageUrl(string? imageUrl)
+        {
+            if (imageUrl is not null && string.IsNullOrWhiteSpace(imageUrl))
+            {
+                throw new ArgumentException(
+                    "La referencia de la imagen no puede estar vacía.",
+                    nameof(imageUrl));
+            }
+
+            ImageUrl = imageUrl;
         }
 
         private static void ValidateDetails(

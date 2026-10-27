@@ -7,10 +7,10 @@ import {
 } from './Services/authService.js'
 import { AdminLoginForm } from './Components/AdminLoginForm.jsx'
 import { AdminProductManager } from './Components/AdminProductManager.jsx'
+import { AdminQuoteRequests } from './Components/AdminQuoteRequests.jsx'
 import { QuoteRequestForm } from './Components/QuoteRequestForm.jsx'
 import { WhatsAppButton } from './Components/WhatsAppButton.jsx'
 import './App.css'
-import { AdminQuoteRequests } from './Components/AdminQuoteRequests.jsx'
 
 function App() {
   const [products, setProducts] = useState([])
@@ -269,8 +269,18 @@ function App() {
           )}
 
           <article className="product-detail-card">
-            <div className="detail-art" aria-hidden="true">
-              <div className="mini-sign">50</div>
+            <div className="detail-art">
+              {selectedProduct.imageUrl ? (
+                <img
+                  className="detail-image"
+                  src={selectedProduct.imageUrl}
+                  alt={selectedProduct.name}
+                />
+              ) : (
+                <div className="mini-sign" aria-hidden="true">
+                  50
+                </div>
+              )}
             </div>
 
             <div className="detail-content">
@@ -392,8 +402,18 @@ function App() {
             <div className="product-grid">
               {sortedProducts.map((product) => (
                 <article className="product-card" key={product.id}>
-                  <div className="product-illustration" aria-hidden="true">
-                    <div className="mini-sign">50</div>
+                  <div className="product-illustration">
+                    {product.imageUrl ? (
+                      <img
+                        className="product-image"
+                        src={product.imageUrl}
+                        alt={product.name}
+                      />
+                    ) : (
+                      <div className="mini-sign" aria-hidden="true">
+                        50
+                      </div>
+                    )}
                   </div>
 
                   <div className="product-info">
