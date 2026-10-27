@@ -13,6 +13,9 @@ function App() {
   const [detailError, setDetailError] = useState('')
   const [quoteFormOpen, setQuoteFormOpen] = useState(false)
 
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -27,6 +30,31 @@ function App() {
 
     loadProducts()
   }, [])
+
+  const categories = [
+    ...new Set(products.map((product) => product.category).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b, 'es'))
+
+  const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      selectedCategory === '' || product.category === selectedCategory
+
+    const searchableText = [
+      product.name,
+      product.description,
+      product.category,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLocaleLowerCase('es')
+
+    const matchesSearch =
+      normalizedSearch === '' || searchableText.includes(normalizedSearch)
+
+    return matchesCategory && matchesSearch
+  })
 
   async function openProduct(product) {
     setSelectedProduct(product)
@@ -50,6 +78,11 @@ function App() {
     setQuoteFormOpen(false)
   }
 
+  function clearFilters() {
+    setSearchTerm('')
+    setSelectedCategory('')
+  }
+
   return (
     <main>
       <nav className="navbar">
@@ -65,11 +98,7 @@ function App() {
           <span>ALSISO</span>
         </a>
 
-        <a
-          className="nav-link"
-          href="#productos"
-          onClick={showCatalog}
-        >
+        <a className="nav-link" href="#productos" onClick={showCatalog}>
           Productos
         </a>
       </nav>
@@ -168,21 +197,64 @@ function App() {
             </p>
           </div>
 
+          {!loading && !error && products.length > 0 && (
+            <div className="catalog-filters">
+              <label className="filter-field">
+                <span>Buscar productos</span>
+                <input
+                  type="search"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="Ej.: velocidad, seguridad..."
+                />
+              </label>
+
+              <label className="filter-field">
+                <span>Categoría</span>
+                <select
+                  value={selectedCategory}
+                  onChange={(event) => setSelectedCategory(event.target.value)}
+                >
+                  <option value="">Todas las categorías</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <button
+                type="button"
+                className="clear-filters-button"
+                onClick={clearFilters}
+                disabled={!searchTerm && !selectedCategory}
+              >
+                Limpiar filtros
+              </button>
+            </div>
+          )}
+
           {loading && <p>Cargando productos...</p>}
 
           {error && (
-            <p role="alert">
-              No se pudieron cargar los productos: {error}
-            </p>
+            <p role="alert">No se pudieron cargar los productos: {error}</p>
           )}
 
           {!loading && !error && products.length === 0 && (
             <p>Aún no hay productos en el catálogo.</p>
           )}
 
-          {!loading && !error && products.length > 0 && (
+          {!loading &&
+            !error &&
+            products.length > 0 &&
+            filteredProducts.length === 0 && (
+              <p>No hay productos que coincidan con esos filtros.</p>
+            )}
+
+          {!loading && !error && filteredProducts.length > 0 && (
             <div className="product-grid">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <article className="product-card" key={product.id}>
                   <div className="product-illustration" aria-hidden="true">
                     <div className="mini-sign">50</div>

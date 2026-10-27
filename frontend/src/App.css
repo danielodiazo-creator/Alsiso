@@ -326,4 +326,56 @@ a {
   }
 }
 
+.catalog-filters {
+  margin: 0 0 28px;
+  display: flex;
+  align-items: end;
+  gap: 16px;
+}
+
+.filter-field {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+  color: #43505c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.filter-field input,
+.filter-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: #17212b;
+  background: #fff;
+  border: 1px solid #cbd2d8;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.clear-filters-button {
+  min-height: 44px;
+  padding: 10px 14px;
+  color: #17212b;
+  background: #fff;
+  border: 1px solid #cbd2d8;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clear-filters-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 700px) {
+  .catalog-filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+
 }
