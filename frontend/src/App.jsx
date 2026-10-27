@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getProductById, getProducts } from './Services/ProductService.js'
-import { QuoteRequestForm } from './components/QuoteRequestForm.jsx'
+import { QuoteRequestForm } from './Components/QuoteRequestForm.jsx'
+import { WhatsAppButton } from './Components/WhatsAppButton.jsx'
 import './App.css'
-
 
 function App() {
   const [products, setProducts] = useState([])
@@ -11,7 +11,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
   const [detailError, setDetailError] = useState('')
-const [quoteFormOpen, setQuoteFormOpen] = useState(false)
+  const [quoteFormOpen, setQuoteFormOpen] = useState(false)
 
   useEffect(() => {
     async function loadProducts() {
@@ -82,7 +82,11 @@ const [quoteFormOpen, setQuoteFormOpen] = useState(false)
             Soluciones de señalización para proteger a las personas y orientar
             cada camino.
           </p>
-          <a className="primary-button" href="#productos" onClick={showCatalog}>
+          <a
+            className="primary-button"
+            href="#productos"
+            onClick={showCatalog}
+          >
             Explorar productos
           </a>
         </div>
@@ -113,20 +117,6 @@ const [quoteFormOpen, setQuoteFormOpen] = useState(false)
           )}
 
           <article className="product-detail-card">
-            {quoteFormOpen ? (
-  <QuoteRequestForm
-    product={selectedProduct}
-    onClose={() => setQuoteFormOpen(false)}
-  />
-) : (
-  <button
-    type="button"
-    className="primary-button quote-open-button"
-    onClick={() => setQuoteFormOpen(true)}
-  >
-    Solicitar cotización
-  </button>
-)}
             <div className="detail-art" aria-hidden="true">
               <div className="mini-sign">50</div>
             </div>
@@ -137,6 +127,7 @@ const [quoteFormOpen, setQuoteFormOpen] = useState(false)
               <p className="product-description">
                 {selectedProduct.description}
               </p>
+
               <strong className="detail-price">
                 {selectedProduct.price === null
                   ? 'Solicitar cotización'
@@ -144,6 +135,25 @@ const [quoteFormOpen, setQuoteFormOpen] = useState(false)
               </strong>
             </div>
           </article>
+
+          <div className="detail-actions">
+            <button
+              type="button"
+              className="primary-button quote-open-button"
+              onClick={() => setQuoteFormOpen(true)}
+            >
+              Solicitar cotización
+            </button>
+
+            <WhatsAppButton productName={selectedProduct.name} />
+          </div>
+
+          {quoteFormOpen && (
+            <QuoteRequestForm
+              product={selectedProduct}
+              onClose={() => setQuoteFormOpen(false)}
+            />
+          )}
         </section>
       ) : (
         <section className="catalog" id="productos">
@@ -152,6 +162,7 @@ const [quoteFormOpen, setQuoteFormOpen] = useState(false)
               <p className="eyebrow">NUESTRO CATÁLOGO</p>
               <h2>Productos destacados</h2>
             </div>
+
             <p className="catalog-intro">
               Encuentra soluciones para señalizar y proteger tus espacios.
             </p>
@@ -190,6 +201,7 @@ const [quoteFormOpen, setQuoteFormOpen] = useState(false)
                           ? 'Solicitar cotización'
                           : `$${Number(product.price).toFixed(2)}`}
                       </strong>
+
                       <button
                         type="button"
                         className="detail-button"
