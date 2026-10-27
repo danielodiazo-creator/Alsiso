@@ -15,6 +15,7 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [sortOrder, setSortOrder] = useState('name-asc')
 
   useEffect(() => {
     async function loadProducts() {
@@ -54,6 +55,29 @@ function App() {
       normalizedSearch === '' || searchableText.includes(normalizedSearch)
 
     return matchesCategory && matchesSearch
+  })
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOrder === 'price-asc' || sortOrder === 'price-desc') {
+      const priceA = a.price == null ? null : Number(a.price)
+      const priceB = b.price == null ? null : Number(b.price)
+
+      // Los productos sin precio quedan al final en ambos órdenes.
+      if (priceA === null && priceB === null) return 0
+      if (priceA === null) return 1
+      if (priceB === null) return -1
+
+      return sortOrder === 'price-asc'
+        ? priceA - priceB
+        : priceB - priceA
+    }
+
+    const nameA = (a.name ?? '').toLocaleLowerCase('es')
+    const nameB = (b.name ?? '').toLocaleLowerCase('es')
+
+    return sortOrder === 'name-asc'
+      ? nameA.localeCompare(nameB, 'es')
+      : nameB.localeCompare(nameA, 'es')
   })
 
   async function openProduct(product) {
@@ -158,7 +182,7 @@ function App() {
               </p>
 
               <strong className="detail-price">
-                {selectedProduct.price === null
+                {selectedProduct.price == null
                   ? 'Solicitar cotización'
                   : `$${Number(selectedProduct.price).toFixed(2)}`}
               </strong>
@@ -224,6 +248,19 @@ function App() {
                 </select>
               </label>
 
+              <label className="filter-field">
+                <span>Ordenar por</span>
+                <select
+                  value={sortOrder}
+                  onChange={(event) => setSortOrder(event.target.value)}
+                >
+                  <option value="name-asc">Nombre: A a Z</option>
+                  <option value="name-desc">Nombre: Z a A</option>
+                  <option value="price-asc">Precio: menor a mayor</option>
+                  <option value="price-desc">Precio: mayor a menor</option>
+                </select>
+              </label>
+
               <button
                 type="button"
                 className="clear-filters-button"
@@ -248,13 +285,13 @@ function App() {
           {!loading &&
             !error &&
             products.length > 0 &&
-            filteredProducts.length === 0 && (
+            sortedProducts.length === 0 && (
               <p>No hay productos que coincidan con esos filtros.</p>
             )}
 
-          {!loading && !error && filteredProducts.length > 0 && (
+          {!loading && !error && sortedProducts.length > 0 && (
             <div className="product-grid">
-              {filteredProducts.map((product) => (
+              {sortedProducts.map((product) => (
                 <article className="product-card" key={product.id}>
                   <div className="product-illustration" aria-hidden="true">
                     <div className="mini-sign">50</div>
@@ -269,7 +306,7 @@ function App() {
 
                     <div className="product-footer">
                       <strong>
-                        {product.price === null
+                        {product.price == null
                           ? 'Solicitar cotización'
                           : `$${Number(product.price).toFixed(2)}`}
                       </strong>
