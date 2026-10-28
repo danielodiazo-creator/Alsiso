@@ -83,9 +83,37 @@ namespace Alsiso.Api
             });
 
             builder.Services
-           .AddIdentity<IdentityUser, IdentityRole>()
+           .AddIdentity<IdentityUser, IdentityRole>(options =>
+           {
+              options.User.RequireUniqueEmail = true;
+
+              options.Password.RequiredLength = 12;
+              options.Password.RequireDigit = true;
+              options.Password.RequireLowercase = true;
+              options.Password.RequireUppercase = true;
+              options.Password.RequireNonAlphanumeric = true;
+
+              options.Lockout.AllowedForNewUsers = true;
+              options.Lockout.MaxFailedAccessAttempts = 5;
+              options.Lockout.DefaultLockoutTimeSpan =
+                 TimeSpan.FromMinutes(15);
+           })
            .AddEntityFrameworkStores<AlsisoDbContext>()
            .AddDefaultTokenProviders();
+
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+
+                options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+                    ? CookieSecurePolicy.SameAsRequest
+                    : CookieSecurePolicy.Always;
+
+                options.ExpireTimeSpan = TimeSpan.FromHours(8);
+                options.SlidingExpiration = true;
+            });
+
 
             builder.Services.AddAuthorization();
 
@@ -106,10 +134,45 @@ namespace Alsiso.Api
 
             var app = builder.Build();
 
+
+            if (app.Environment.IsDevelopment())
+            {
+                await SeedAdminAsync(app, "Admin");
+            }
+            else
+            {
+                var bootstrapEmail =
+                    app.Configuration["AdminBootstrap:Email"];
+
+                var bootstrapPassword =
+                    app.Configuration["AdminBootstrap:Password"];
+
+                var hasBootstrapEmail =
+                    !string.IsNullOrWhiteSpace(bootstrapEmail);
+
+                var hasBootstrapPassword =
+                    !string.IsNullOrWhiteSpace(bootstrapPassword);
+
+                if (hasBootstrapEmail != hasBootstrapPassword)
+                {
+                    throw new InvalidOperationException(
+                        "AdminBootstrap:Email y AdminBootstrap:Password deben configurarse juntos.");
+                }
+
+                if (hasBootstrapEmail && hasBootstrapPassword)
+                {
+                    await SeedAdminAsync(app, "AdminBootstrap");
+                }
+            }
+
+
+
+
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                await SeedAdminAsync(app);
+                
                 app.MapOpenApi();
 
                 app.UseSwaggerUI(options =>
@@ -135,7 +198,7 @@ namespace Alsiso.Api
             app.Run();
         }
 
-        private static async Task SeedAdminAsync(WebApplication app)
+        private static async Task SeedAdminAsync(WebApplication app, string sectionName)
         {
             using var scope = app.Services.CreateScope();
 
@@ -144,14 +207,14 @@ namespace Alsiso.Api
             var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var email = configuration["Admin:Email"];
-            var password = configuration["Admin:Password"];
+            var email = configuration[$"{sectionName}:Email"];
+            var password = configuration[$"{sectionName}:Password"];
 
             if (string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
             {
                 throw new InvalidOperationException(
-                    "Faltan Admin:Email o Admin:Password en User Secrets.");
+                $"Faltan {sectionName}:Email o {sectionName}:Password en la configuración segura.");
             }
 
             const string adminRole = "Admin";
