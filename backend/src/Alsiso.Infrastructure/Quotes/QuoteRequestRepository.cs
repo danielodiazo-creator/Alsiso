@@ -19,7 +19,6 @@ namespace Alsiso.Infrastructure.Quotes
                 quoteRequest,
                 cancellationToken);
 
-            await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IReadOnlyList<QuoteRequest>> GetAllAsync(
@@ -34,7 +33,16 @@ namespace Alsiso.Infrastructure.Quotes
                 .ToList();
         }
 
-
+        public async Task<QuoteRequest?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+        {
+            return await dbContext.QuoteRequests
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    quoteRequest => quoteRequest.Id == id,
+                    cancellationToken);
+        }
 
 
 

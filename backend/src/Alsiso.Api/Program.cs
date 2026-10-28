@@ -1,4 +1,3 @@
-
 using Alsiso.Application.Products;
 using Alsiso.Infrastructure.Products;
 using Alsiso.Infrastructure.Products.Persistence;
@@ -7,6 +6,10 @@ using Alsiso.Application.Quotes;
 using Alsiso.Infrastructure.Quotes;
 using Microsoft.AspNetCore.Identity;
 using Alsiso.Infrastructure.Products.Images;
+using Alsiso.Application.Abstractions;
+using Alsiso.Infrastructure.Persistence;
+using Alsiso.Infrastructure.Notifications;
+using Alsiso.Api.BackgroundServices;
 
 namespace Alsiso.Api
 {
@@ -26,7 +29,19 @@ namespace Alsiso.Api
             builder.Services.AddScoped<GetProductByIdUseCase>();
             builder.Services.AddScoped<UpdateProductUseCase>();
             builder.Services.AddScoped<DeleteProductUseCase>();
-            
+
+            builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
+            builder.Services.AddScoped<
+            ProcessPendingQuoteNotificationsUseCase>();
+
+            builder.Services.AddHostedService<
+            QuoteNotificationBackgroundService>();
+
+            builder.Services.AddScoped<
+            IQuoteNotificationQueue,
+            QuoteNotificationQueue>();
+
             builder.Services.AddScoped<
             IQuoteRequestRepository,
             QuoteRequestRepository>();
@@ -34,7 +49,11 @@ namespace Alsiso.Api
             builder.Services.AddScoped<
             IQuoteRequestNotifier,
             SmtpQuoteRequestNotifier>();
-           
+
+            builder.Services.AddScoped<
+            IQuoteNotificationOutboxRepository,
+            QuoteNotificationOutboxRepository>();
+
             builder.Services.AddScoped<CreateQuoteRequestUseCase>();
             builder.Services.AddScoped<GetQuoteRequestsUseCase>();
 
