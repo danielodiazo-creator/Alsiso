@@ -13,5 +13,9 @@ namespace Alsiso.Application.Quotes
 
         Task<IReadOnlyList<QuoteRequest>> GetAllAsync(
         CancellationToken cancellationToken);
+
+        Task<QuoteRequest?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
     }
 }

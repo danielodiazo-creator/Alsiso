@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Alsiso.Infrastructure.Notifications;
 
 namespace Alsiso.Infrastructure.Products.Persistence
 {
@@ -16,5 +17,9 @@ namespace Alsiso.Infrastructure.Products.Persistence
         public DbSet<Product> Products => Set<Product>();
 
         public DbSet<QuoteRequest> QuoteRequests => Set<QuoteRequest>();
+
+        public DbSet<QuoteNotificationOutboxMessage>
+        QuoteNotificationOutboxMessages =>
+        Set<QuoteNotificationOutboxMessage>();
     }
 }
