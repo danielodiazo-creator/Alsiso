@@ -79,6 +79,9 @@ namespace Alsiso.Infrastructure.Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("QuoteRequests");

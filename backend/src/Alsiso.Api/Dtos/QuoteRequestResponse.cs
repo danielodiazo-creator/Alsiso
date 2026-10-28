@@ -1,4 +1,6 @@
-﻿namespace Alsiso.Api.Dtos
+﻿using Alsiso.Domain.Enums;
+
+namespace Alsiso.Api.Dtos
 {
     public sealed record QuoteRequestResponse(
     Guid Id,
@@ -9,5 +11,6 @@
     string? Phone,
     int Quantity,
     string? Message,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    QuoteRequestStatus Status);
 }

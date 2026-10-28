@@ -8,7 +8,9 @@ namespace Alsiso.Api.Controllers;
 [ApiController]
 [Route("api/quote-requests")]
 public sealed class QuoteRequestsController(
-    CreateQuoteRequestUseCase createQuoteRequestUseCase, GetQuoteRequestsUseCase getQuoteRequestsUseCase) : ControllerBase
+    CreateQuoteRequestUseCase createQuoteRequestUseCase, 
+    GetQuoteRequestsUseCase getQuoteRequestsUseCase,
+    UpdateQuoteRequestStatusUseCase updateQuoteRequestStatusUseCase) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<QuoteRequestResponse>> Create(
@@ -52,7 +54,8 @@ public sealed class QuoteRequestsController(
             quoteRequest.Phone,
             quoteRequest.Quantity,
             quoteRequest.Message,
-            quoteRequest.CreatedAt);
+            quoteRequest.CreatedAt,
+            quoteRequest.Status);
 
         return StatusCode(StatusCodes.Status201Created, response);
     }
@@ -75,9 +78,59 @@ public sealed class QuoteRequestsController(
                 quoteRequest.Phone,
                 quoteRequest.Quantity,
                 quoteRequest.Message,
-                quoteRequest.CreatedAt))
+                quoteRequest.CreatedAt,
+                quoteRequest.Status))
             .ToList();
 
         return Ok(responses);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("{id:guid}/status")]
+    public async Task<ActionResult<QuoteRequestResponse>> UpdateStatus(
+    Guid id,
+    UpdateQuoteRequestStatusApiRequest request,
+    CancellationToken cancellationToken)
+    {
+        if (!Enum.IsDefined(request.Status))
+        {
+            return BadRequest(new
+            {
+                message = "El estado indicado no es válido."
+            });
+        }
+
+        var command = new UpdateQuoteRequestStatusCommand(
+            id,
+            request.Status);
+
+        var quoteRequest = await updateQuoteRequestStatusUseCase.ExecuteAsync(
+            command,
+            cancellationToken);
+
+        if (quoteRequest is null)
+        {
+            return NotFound(new
+            {
+                message = "La solicitud de cotización no existe."
+            });
+        }
+
+        var response = new QuoteRequestResponse(
+            quoteRequest.Id,
+            quoteRequest.ProductId,
+            quoteRequest.ProductName,
+            quoteRequest.CustomerName,
+            quoteRequest.Email,
+            quoteRequest.Phone,
+            quoteRequest.Quantity,
+            quoteRequest.Message,
+            quoteRequest.CreatedAt,
+            quoteRequest.Status);
+
+        return Ok(response);
+    }
+
+
+
 }

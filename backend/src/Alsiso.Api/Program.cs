@@ -30,6 +30,7 @@ namespace Alsiso.Api
             builder.Services.AddScoped<UpdateProductUseCase>();
             builder.Services.AddScoped<DeleteProductUseCase>();
 
+
             builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
             builder.Services.AddScoped<
@@ -56,6 +57,7 @@ namespace Alsiso.Api
 
             builder.Services.AddScoped<CreateQuoteRequestUseCase>();
             builder.Services.AddScoped<GetQuoteRequestsUseCase>();
+            builder.Services.AddScoped<UpdateQuoteRequestStatusUseCase>();
 
             var productImagesDirectory = Path.Combine(
             builder.Environment.ContentRootPath,

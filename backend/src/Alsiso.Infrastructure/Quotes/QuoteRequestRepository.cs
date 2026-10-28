@@ -45,6 +45,16 @@ namespace Alsiso.Infrastructure.Quotes
         }
 
 
+        public async Task<QuoteRequest?> GetTrackedByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+        {
+            return await dbContext.QuoteRequests
+                .FirstOrDefaultAsync(
+                    quoteRequest => quoteRequest.Id == id,
+                    cancellationToken);
+        }
+
 
 
     }
