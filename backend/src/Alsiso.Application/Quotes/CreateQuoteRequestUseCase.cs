@@ -8,7 +8,8 @@ namespace Alsiso.Application.Quotes
 {
     public sealed class CreateQuoteRequestUseCase(
     IProductRepository productRepository,
-    IQuoteRequestRepository quoteRequestRepository)
+    IQuoteRequestRepository quoteRequestRepository,
+    IQuoteRequestNotifier quoteRequestNotifier)
     {
         public async Task<QuoteRequest?> ExecuteAsync(
             CreateQuoteRequestCommand command,
@@ -35,6 +36,10 @@ namespace Alsiso.Application.Quotes
                 DateTimeOffset.UtcNow);
 
             await quoteRequestRepository.AddAsync(
+                quoteRequest,
+                cancellationToken);
+
+            await quoteRequestNotifier.NotifyNewQuoteAsync(
                 quoteRequest,
                 cancellationToken);
 

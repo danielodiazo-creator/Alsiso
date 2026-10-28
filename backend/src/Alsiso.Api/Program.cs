@@ -26,10 +26,15 @@ namespace Alsiso.Api
             builder.Services.AddScoped<GetProductByIdUseCase>();
             builder.Services.AddScoped<UpdateProductUseCase>();
             builder.Services.AddScoped<DeleteProductUseCase>();
+            
             builder.Services.AddScoped<
             IQuoteRequestRepository,
             QuoteRequestRepository>();
-
+            
+            builder.Services.AddScoped<
+            IQuoteRequestNotifier,
+            SmtpQuoteRequestNotifier>();
+           
             builder.Services.AddScoped<CreateQuoteRequestUseCase>();
             builder.Services.AddScoped<GetQuoteRequestsUseCase>();
 
