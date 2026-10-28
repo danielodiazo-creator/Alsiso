@@ -13,3 +13,16 @@ export function createQuoteRequest(quoteRequest) {
     body: JSON.stringify(quoteRequest),
   })
 }
+
+export function updateQuoteRequestStatus(id, status) {
+  return requestJson(
+    `/api/quote-requests/${encodeURIComponent(id)}/status`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status }),
+    },
+  )
+}

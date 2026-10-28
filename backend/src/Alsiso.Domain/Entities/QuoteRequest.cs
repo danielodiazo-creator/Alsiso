@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Alsiso.Domain.Enums;
 
 namespace Alsiso.Domain.Entities
 {
@@ -16,6 +17,7 @@ namespace Alsiso.Domain.Entities
         public int Quantity { get; private set; }
         public string? Message { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
+        public QuoteRequestStatus Status { get; private set; }
 
         public QuoteRequest(
             Guid id,
@@ -79,7 +81,27 @@ namespace Alsiso.Domain.Entities
             Quantity = quantity;
             Message = string.IsNullOrWhiteSpace(message) ? null : message.Trim();
             CreatedAt = createdAt.ToUniversalTime();
+            Status = QuoteRequestStatus.New;
         }
+
+
+        public void ChangeStatus(QuoteRequestStatus status)
+        {
+            if (status is not QuoteRequestStatus.New
+                and not QuoteRequestStatus.Contacted
+                and not QuoteRequestStatus.Closed)
+            {
+                throw new ArgumentOutOfRangeException(nameof(status));
+            }
+
+            Status = status;
+        }
+
+
+
+
+
+
     }
 
 

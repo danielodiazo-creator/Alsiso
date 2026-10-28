@@ -17,5 +17,9 @@ namespace Alsiso.Application.Quotes
         Task<QuoteRequest?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken);
+
+        Task<QuoteRequest?> GetTrackedByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
     }
 }
